@@ -71,6 +71,10 @@
                             System.out.println("help :");
                         }
                     }
+                    else if(commands[0].equals("name")){//『NAME』
+                        System.out.print("name: ");
+                        name(commands[1]);
+                    }
                     else{
                         System.out.println("コマンドが存在しません。");
                         this.send("コマンドが存在しません。(helpでコマンド一覧)");
@@ -127,6 +131,28 @@
              Object value = entry.getValue();
              this.send(key + " … " + value);
          }
+     }
+     /* 名前を変更するためのメソッド 『NAME』*/
+     public void name(String name) throws IOException{
+         
+         String preName = this.getClientName();
+         
+         for(int i = 0;i < clients.size(); i++){
+             ChatClientHandler handler = (ChatClientHandler)clients.get(i);
+             if(name.equals(handler.getClientName())){//他に同じ名前の人がいたら
+                 this.send("同じ名前があります。");//クライアントに送信
+                 return;//メソッドの処理を終了
+             }
+         }
+         setClientName(name);//名前を設定する
+         
+         for(int i = 0;i < clients.size();i ++ ){
+             ChatClientHandler handler = (ChatClientHandler)clients.get(i);
+             if(handler != this){//自分以外のユーザで
+                 handler.send("name:" + preName + "->" + name);//他のユーザにも名前の変更を知らせる
+             }
+         }
+         System.out.println("name:" + name);//サーバに残す
      }
      
      /*+++++++++++++サーバの基本機能を実行するためのメソッド++++++++++++++*/
