@@ -75,6 +75,10 @@
                         System.out.print("name: ");
                         name(commands[1]);
                     }
+                    else if(commands[0].equals("whoami")){//『WHOAMI』
+                        System.out.print("whoami: ");
+                        whoami();
+                    }
                     else{
                         System.out.println("コマンドが存在しません。");
                         this.send("コマンドが存在しません。(helpでコマンド一覧)");
@@ -153,6 +157,13 @@
              }
          }
          System.out.println("name:" + name);//サーバに残す
+     }
+     /* クライアントに名前を送信するメソッド   『WHOAMI』*/
+     public void whoami() throws IOException{
+         
+         System.out.println(getClientName());
+         this.send(getClientName());
+         
      }
      
      /*+++++++++++++サーバの基本機能を実行するためのメソッド++++++++++++++*/
