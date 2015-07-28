@@ -83,6 +83,11 @@
                         System.out.print("post: ");
                         post(commands[1]);
                     }
+                    else if(commands[0].equals("bye")){//『BYE』
+                        System.out.print("bye: ");
+                        removeClient();
+                        close();
+                    }
                     else{
                         System.out.println("コマンドが存在しません。");
                         this.send("コマンドが存在しません。(helpでコマンド一覧)");
@@ -97,7 +102,7 @@
             e.printStackTrace();
             
         }finally{
-            close();
+            try{ removeClient(); close(); }catch(IOException e){}
         }
     }
      
@@ -169,6 +174,18 @@
          this.send(getClientName());
          
      }
+     /* クライアントの情報を消去するメソッド 『BYE』*/
+     void removeClient() throws IOException{
+         ChatClientHandler removeHandler = this;
+         ChatClientHandler handler = null;
+         
+         clients.remove(removeHandler);//クライアントをリストから消去
+         
+         post(removeHandler.getClientName() + " disconnected.");
+         
+         System.out.println(removeHandler.getClientName() + " disconnected.");//サーバ
+     }
+     
      
      /*++++++++++++++投稿に関するコマンド+++++++++++++++++++++++++++++++++++++++++*/
      /* 接続している全員にmessageを送信するメソッド  『POST』*/
@@ -223,10 +240,6 @@
      }
      /* クライアントとの接続を閉じるメソッド */
      void close(){
-         ChatClientHandler removeHandler = this;
-         ChatClientHandler handler = null;
-         
-         clients.remove(removeHandler);//クライアントをリストから消去
          if(in != null){try{ in.close(); } catch(IOException e ){}}
          if(out != null){try{ out.close(); } catch(IOException e ){}}
          if(socket != null){try{ socket.close(); } catch(IOException e ){}}
